@@ -1,0 +1,38 @@
+GHETTO VISION FOR ROBOTS
+==================================================================================================
+
+Step 1 -------------------------------------------------------------------------------------------
+==================================================================================================
+Write a program that takes an image and creates a new image where each pixel
+not within the specified range of RGB values is filtered out.
+	- You may specify the input image and range of RGB values through arguments or standard input.
+	- The input images are PNG files.
+	- Your program must create a new PNG file called "output.png".
+		- Pixels within the specified range of RGB values stay the same.
+		- Pixels not within the specified range of RGB values are turned black.
+	- The range of RGB values is specified using 6 values:
+		- low_red, low_blue, low_green, high_red, high_blue, high_green.
+		- You can probably guess what these mean. If not, google what RGB values are. Play around with a colour map online.
+	- The stuff that comes packaged with Java should be enough to do this.
+		- See here to get started with reading images: https://stackoverflow.com/questions/6444869/how-do-i-read-pixels-from-a-png-file
+
+Step 2 -------------------------------------------------------------------------------------------
+==================================================================================================
+Modify your program from Step 1 to calculate the mean position of the pixels that were within the specified range of RGB values.
+The output image should contain something marking where this mean position is.  i.e: a crosshair or dot, etc
+You may create a new program for this, or you may add an option to your program from Step 1.
+
+Step 3 -------------------------------------------------------------------------------------------
+==================================================================================================
+Take a picture of an object in your household and use your program on the object.
+When I was in high school and did something similar to what this HW is based on, I used a bright orange gluestick.
+
+Step 4 -------------------------------------------------------------------------------------------
+==================================================================================================
+Modify your program from after Steps 2 and 3 to also take in as input into your program the FOV dimensions of the camera used to take a picture.
+Use this information to calculate the angle at which the "mean position" from Step 2 is away from the camera.
+
+Step 5 -------------------------------------------------------------------------------------------
+==================================================================================================
+How could the information your program provides after Step 4 be used by an FRC robot?
+Instead of filtering pixels by RGB values, are there better ways to track objects?
