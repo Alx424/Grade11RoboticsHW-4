@@ -36,7 +36,7 @@ public class Filter {
         return;
         
     }
-    public static void meanFilteredPixels(String inputImage, String outputImage, int Rmin, int Rmax, int Gmin, int Gmax, int Bmin, int Bmax) {
+    public static void filterWithMeanPixels(String inputImage, String outputImage, int Rmin, int Rmax, int Gmin, int Gmax, int Bmin, int Bmax) {
         int w, h;
         Color minColor = new Color(Rmin, Gmin, Bmin), maxColor = new Color(Rmax, Gmax, Bmax);
         BufferedImage image, newImage;
@@ -48,6 +48,7 @@ public class Filter {
             int xCoordSum = 0;
             int yCoordSum = 0;
             int numOfPassedPixels = 0;
+            int meanX = 0, meanY = 0;
             if(numOfPixels != 0) {
                 for(int i = 0; i < numOfPixels; i++) {
                     // for pixel x=i%w, y=Math.floor(i/w)
@@ -61,15 +62,18 @@ public class Filter {
                         newImage.setRGB(i%w, (int)Math.floor(i/w), black.getRGB());
                     }
                 }
-                int meanX = Math.round(xCoordSum/numOfPassedPixels);
-                int meanY = Math.round(yCoordSum/numOfPassedPixels);
+                if(numOfPassedPixels > 0) {
+                    meanX = (int)Math.round(xCoordSum/numOfPassedPixels);
+                    meanY = (int)Math.round(yCoordSum/numOfPassedPixels);
+                }
 
                 // creating cross marking mean pixel
-                newImage.setRGB(meanX, meanY, 0);
-                newImage.setRGB(meanX, meanY>0?meanY-1:meanY, 0);
-                newImage.setRGB(meanX, meanY<numOfPixels-w?meanY+1:meanY, 0);
-                newImage.setRGB(meanX>0?meanX-1:meanX, meanY, 0);
-                newImage.setRGB(meanX<numOfPixels?meanX+1:meanX, meanY, 0);
+                Color cross = new Color(138, 224, 235);
+                newImage.setRGB(meanX, meanY, cross.getRGB());
+                newImage.setRGB(meanX, meanY>0?meanY-1:meanY, cross.getRGB());
+                newImage.setRGB(meanX, meanY<numOfPixels-w?meanY+1:meanY, cross.getRGB());
+                newImage.setRGB(meanX>0?meanX-1:meanX, meanY, cross.getRGB());
+                newImage.setRGB(meanX<numOfPixels?meanX+1:meanX, meanY, cross.getRGB());
 
                 ImageIO.write(newImage, "PNG", new File(outputImage));
             }
@@ -78,5 +82,56 @@ public class Filter {
             return;
         }
         return;
+    }
+    public static float[] angleFromCamera(int XFOV, int YFOV, String inputImage, String outputImage, int Rmin, int Rmax, int Gmin, int Gmax, int Bmin, int Bmax) {
+        int w, h;
+        float xAngle = -1, yAngle = -1;
+        Color minColor = new Color(Rmin, Gmin, Bmin), maxColor = new Color(Rmax, Gmax, Bmax);
+        BufferedImage image, newImage;
+        try {
+            image = ImageIO.read(new File(inputImage));
+            newImage = ImageIO.read(new File(outputImage));
+            w = image.getWidth(); h = image.getHeight();
+            long numOfPixels = w * h;
+            int xCoordSum = 0;
+            int yCoordSum = 0;
+            int numOfPassedPixels = 0;
+            int meanX = 0, meanY = 0;
+            if(numOfPixels != 0) {
+                for(int i = 0; i < numOfPixels; i++) {
+                    // for pixel x=i%w, y=Math.floor(i/w)
+                    if(image.getRGB(i%w, (int)Math.floor(i/w)) > minColor.getRGB() && image.getRGB(i%w, (int)Math.floor(i/w)) < maxColor.getRGB()) {
+                        newImage.setRGB(i%w, (int)Math.floor(i/w), image.getRGB(i%w, (int)Math.floor(i/w)));
+                        xCoordSum += i%w;
+                        yCoordSum += (int)Math.floor(i/w);
+                        numOfPassedPixels++;
+                    } else {
+                        Color black = new Color(0, 0, 0);
+                        newImage.setRGB(i%w, (int)Math.floor(i/w), black.getRGB());
+                    }
+                }
+                if(numOfPassedPixels > 0) {
+                    meanX = (int)Math.round(xCoordSum/numOfPassedPixels);
+                    meanY = (int)Math.round(yCoordSum/numOfPassedPixels);
+                }
+
+                // creating cross marking mean pixel
+                Color cross = new Color(138, 224, 235);
+                newImage.setRGB(meanX, meanY, cross.getRGB());
+                newImage.setRGB(meanX, meanY>0?meanY-1:meanY, cross.getRGB());
+                newImage.setRGB(meanX, meanY<numOfPixels-w?meanY+1:meanY, cross.getRGB());
+                newImage.setRGB(meanX>0?meanX-1:meanX, meanY, cross.getRGB());
+                newImage.setRGB(meanX<numOfPixels?meanX+1:meanX, meanY, cross.getRGB());
+
+                ImageIO.write(newImage, "PNG", new File(outputImage));
+                xAngle = meanX*((float)XFOV/w) - XFOV/2;
+                yAngle = meanY*((float)YFOV/h) - YFOV/2;
+            }
+        } catch (IOException e) {
+            System.out.println("Error retrieving file");
+            return null;
+        }
+        float[] ans = {xAngle, yAngle};
+        return ans;
     }
 }
