@@ -7,9 +7,9 @@ import java.io.File;
 import java.io.IOException;
 
 public class Filter {
-    public static void filterRGB(String inputImage, String outputImage, int Rmin, int Rmax, int Gmin, int Gmax, int Bmin, int Bmax) {
+    public static void filterRGB(String inputImage, String outputImage, int rMin, int rMax, int gMin, int gMax, int bMin, int bMax) {
         int w, h;
-        Color minColor = new Color(Rmin, Gmin, Bmin), maxColor = new Color(Rmax, Gmax, Bmax);
+        Color minColor = new Color(rMin, gMin, bMin), maxColor = new Color(rMax, gMax, bMax);
         BufferedImage image, newImage;
         try {
             image = ImageIO.read(new File(inputImage));
@@ -36,9 +36,9 @@ public class Filter {
         return;
         
     }
-    public static void filterWithMeanPixels(String inputImage, String outputImage, int Rmin, int Rmax, int Gmin, int Gmax, int Bmin, int Bmax) {
+    public static void filterWithMeanPixels(String inputImage, String outputImage, int rMin, int rMax, int gMin, int gMax, int bMin, int bMax) {
         int w, h;
-        Color minColor = new Color(Rmin, Gmin, Bmin), maxColor = new Color(Rmax, Gmax, Bmax);
+        Color minColor = new Color(rMin, gMin, bMin), maxColor = new Color(rMax, gMax, bMax);
         BufferedImage image, newImage;
         try {
             image = ImageIO.read(new File(inputImage));
@@ -83,10 +83,10 @@ public class Filter {
         }
         return;
     }
-    public static float[] angleFromCamera(int XFOV, int YFOV, String inputImage, String outputImage, int Rmin, int Rmax, int Gmin, int Gmax, int Bmin, int Bmax) {
+    public static float[] angleFromCamera(int xFOV, int yFOV, String inputImage, String outputImage, int rMin, int rMax, int gMin, int gMax, int bMin, int bMax) {
         int w, h;
         float xAngle = -1, yAngle = -1;
-        Color minColor = new Color(Rmin, Gmin, Bmin), maxColor = new Color(Rmax, Gmax, Bmax);
+        Color minColor = new Color(rMin, gMin, bMin), maxColor = new Color(rMax, gMax, bMax);
         BufferedImage image, newImage;
         try {
             image = ImageIO.read(new File(inputImage));
@@ -124,8 +124,8 @@ public class Filter {
                 newImage.setRGB(meanX<numOfPixels?meanX+1:meanX, meanY, cross.getRGB());
 
                 ImageIO.write(newImage, "PNG", new File(outputImage));
-                xAngle = meanX*((float)XFOV/w) - XFOV/2;
-                yAngle = meanY*((float)YFOV/h) - YFOV/2;
+                xAngle = meanX*((float)xFOV/w) - xFOV/2;
+                yAngle = meanY*((float)yFOV/h) - yFOV/2;
             }
         } catch (IOException e) {
             System.out.println("Error retrieving file");
